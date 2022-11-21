@@ -301,5 +301,5 @@ if __name__ == "__main__":
     main()
 '''
 config.load_config()
-TOKEN = os.getenv('TOKEN')
+TOKEN = str(os.getenv('TOKEN'))
 bot.run(TOKEN)

@@ -4,6 +4,8 @@ import os
 import mysql.connector 
 from mysql.connector import errorcode
 import sys
+import warnings
+warnings.warn("Warning...........Message")
 
 config_vals = {}
 
@@ -186,7 +188,7 @@ def load_config_from_db():
         cur.execute("SELECT * FROM Servers;") 
 
         for server_id, server_name, mod_channel_id, mod_role_id  in cur: 
-            print(server_name, str(server_id), str(mod_channel_id), str(mod_role_id)))
+            print(server_name, str(server_id), str(mod_channel_id), str(mod_role_id))
             config_vals[server_name] = {
                 "id" : server_id,
                 "output_channel" : mod_channel_id,

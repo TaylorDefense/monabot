@@ -182,7 +182,7 @@ def set_mod_channel(guild, channel):
 
 #load config vals from the database
 def load_config_from_db():
-    global config_vals
+    global config_vals = {}
     try:
         conn = connect_to_db()
         cur = conn.cursor()
@@ -222,6 +222,23 @@ def show_db_instances():
             print()
         dbcur.close()
         conn.close()
+    except mysql.connector.Error as err:
+        if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
+            print("Something is wrong with your user name or password")
+        elif err.errno == errorcode.ER_BAD_DB_ERROR:
+            print("Database does not exist")
+        else:
+            print(err)
+
+def clear_db(guild, role):
+    try:
+        conn = connect_to_db()
+        dbcur = conn.cursor()
+        dbcur.execute("DROP TABLE Servers") 
+        conn.commit()
+        dbcur.close()
+        conn.close()
+        print("dropped table")
     except mysql.connector.Error as err:
         if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
             print("Something is wrong with your user name or password")

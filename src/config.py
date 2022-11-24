@@ -45,9 +45,9 @@ def save_config(exit_flag=0):
 
 def connect_to_db():
     try:
-        conn =  mysql.connector.connect(user=os.getenv['MYSQL_USER'], password=os.getenv['MYSQL_PASSWORD'],
-                                    host=os.getenv['MYSQL_HOST'],
-                                    database=os.getenv['MYSQL_DATABASE'])
+        conn =  mysql.connector.connect(user=os.getenv('MYSQL_USER'), password=os.getenv('MYSQL_PASSWORD'),
+                                    host=os.getenv('MYSQL_HOST'),
+                                    database=os.getenv('MYSQL_DATABASE'))
     except mysql.connector.Error as err:
         if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
             print("Something is wrong with your user name or password")

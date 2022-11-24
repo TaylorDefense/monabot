@@ -207,12 +207,12 @@ def load_config_from_db():
     return
 
 def show_db_instances():
-     try:
+    try:
         conn = connect_to_db()
         dbcur = conn.cursor()
         dbcur.execute("SELECT * FROM Servers;")
         for (server_id, server_name, mod_channel_id, mod_role_id) in dbcur: 
-            print(server_name, str(server_id), str(mod_channel_id), str(mod_role_id)))
+            print(server_name, str(server_id), str(mod_channel_id), str(mod_role_id))
         dbcur.close()
         conn.close()
         print("mod channel set")

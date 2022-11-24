@@ -232,6 +232,7 @@ def show_db_instances():
             print(err)
 
 def clear_db(guild, role):
+    global config_vals
     try:
         conn = connect_to_db()
         dbcur = conn.cursor()
@@ -240,6 +241,7 @@ def clear_db(guild, role):
         dbcur.close()
         conn.close()
         print("dropped table")
+        config_vals = {}
     except mysql.connector.Error as err:
         if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
             print("Something is wrong with your user name or password")

@@ -63,6 +63,7 @@ def connect_to_db():
 
 #initialize the table if it doesn't exist
 def initialize_table():
+    global config_vals
     try:
         conn = connect_to_db()
         dbcur = conn.cursor()
@@ -75,6 +76,7 @@ def initialize_table():
             );
             """)
         # load in values saved to config file
+        load_config()
         for key in config_vals.keys():
             vals = config_vals[key]
             #get values to insert
@@ -93,6 +95,7 @@ def initialize_table():
             #insert into table
             dbcur.execute("INSERT IGNORE INTO Servers (server_id,server_name, mod_channel_id, mod_role_id) VALUES (?, ?, ?, ?);", (server_id, server_name, mod_channel_id, mod_role)) 
         print("table initialized")
+        config_vals = {}
         conn.commit()
         dbcur.close()
         conn.close()
@@ -152,8 +155,8 @@ def set_mod_role(guild, role):
 
 #add a mod channel for a guild to the database
 def set_mod_channel(guild, channel):
-    guild_id = "'" + str(guild.id) + "'"
-    channel_id = "'" + str(channel.id) + "'"
+    guild_id = str(guild.id)
+    channel_id = str(channel.id)
     try:
         conn = connect_to_db()
         dbcur = conn.cursor()

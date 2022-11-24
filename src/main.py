@@ -6,6 +6,7 @@ Description: the main driver for MonaBot
 
 import discord
 from discord.ext import commands
+from dotenv import load_dotenv
 import os
 import asyncio
 
@@ -23,13 +24,16 @@ bot = commands.Bot(command_prefix=commands.when_mentioned_or(*default_prefixes),
 
 @bot.event
 async def on_ready():
-    config.load_config()
+    #config.load_config()
+    config.initialize_table()
+    config.load_config_from_db()
     print('We have logged in as {0.user}'.format(bot))
+    print(config.config_vals)
 
 @bot.event
 async def on_guild_join(guild):    
-    config.change_config(guild, "id", guild.id)
-    print("new channel added")
+    config.add_guild(guild)
+    print("new server added")
 
 #--- TRIGGERS ---
 @bot.event
@@ -37,7 +41,6 @@ async def on_message(message):
     if message.author == bot.user:
         return
     #we don't care if mona is the person sending messages
-    print(message.guild, message.author, message.content)
     if("tempcheck" in message.content and not "!help" in message.content):
         await call_tempcheck(message)
     await bot.process_commands(message)
@@ -59,7 +62,7 @@ async def setchannel(ctx):
     !callmods will not work unless the mod channel is set!
     '''
     print(ctx.message.channel)
-    config.change_config(ctx.guild, "output_channel", ctx.message.channel.id)
+    config.set_mod_channel(ctx.guild, ctx.message.channel)
     channel = bot.get_channel(config.config_vals[ctx.guild.name]["output_channel"])
     await channel.send("Output channel set!")
 
@@ -78,7 +81,7 @@ async def setmodrole(ctx):
         await ctx.send("Please mention only one role to set as the moderator role.")
     else:
         print(ctx.message.role_mentions[0].id)
-        config.change_config(ctx.guild, "mod_role", ctx.message.role_mentions[0].id)
+        config.set_mod_role(ctx.guild, ctx.message.role_mentions[0])
 
         if "output_channel" not in config.config_vals[ctx.guild.name].keys():
             channel = ctx.channel
@@ -126,21 +129,24 @@ async def callmods(ctx):
     If a mod role or an output channel has not been set, the command will not execute. See !setmodrole
     and !setchannel for how admins can set mode roles and output channels.
     '''
+    print("calling mods")
     await ctx.message.delete()
-
-    if not "mod_role" in config.config_vals[ctx.guild.name].keys():
-        if ctx.message.author.guild_permissions.administrator:
-            await ctx.send("No mod role has been specified. Your admin can do this with !setmodrole")
-        else:
-            await ctx.send("Your admin hasn't set up that command.")
-    else:
+    try:
         message = ctx.guild.get_role(config.config_vals[ctx.guild.name]["mod_role"]).mention + " " + ctx.author.mention + " is calling for assistance in " + ctx.channel.mention
         print(message)
-        if not "output_channel" in config.config_vals[ctx.guild.name].keys() :
-            await ctx.send("No mod channel has been specified. Your admin can do this with !setchannel")
+        channel = bot.get_channel(config.config_vals[ctx.guild.name]["output_channel"])
+        await channel.send(message)
+    except AttributeError:
+        if ctx.message.author.guild_permissions.administrator:
+            await ctx.send("You haven't set up that command. You can do this with !setmodrole and !setchannel. If you're still having issues, make sure that the MonaBot role is at the top of your roles list, and that MonaBot has permission to see your output channel!")
         else:
-            channel = bot.get_channel(config.config_vals[ctx.guild.name]["output_channel"])
-            await channel.send(message)
+            await ctx.send("Your admin hasn't set up that command.")
+    except KeyError:
+        if ctx.message.author.guild_permissions.administrator:
+            await ctx.send("You haven't set up that command. You can do this with !setmodrole and !setchannel. If you're still having issues, make sure that the MonaBot role is at the top of your roles list, and that MonaBot has permission to see your output channel!")
+        else:
+            await ctx.send("Your admin hasn't set up that command.")
+    print("called the mods")
 
 @bot.command()
 async def tempcheck(ctx):
@@ -281,25 +287,25 @@ async def call_tempcheck(message : discord.Message):
     for emoji in reactions:
         await message.add_reaction(emoji)
 
-    if "mod_role" in config.config_vals[message.guild.name].keys():
+    try:
         msg = message.guild.get_role(config.config_vals[message.guild.name]["mod_role"]).mention + " " + message.author.mention + " is calling a tempcheck in " + message.channel.mention
-        if not "output_channel" in config.config_vals[message.guild.name].keys() :
-            channel = message.channel
-        else:
-            channel = bot.get_channel(config.config_vals[message.guild.name]["output_channel"])
+        channel = bot.get_channel(config.config_vals[message.guild.name]["output_channel"])
         await channel.send(msg)
+    except AttributeError:
+        if message.author.guild_permissions.administrator:
+            await message.reply("You haven't set up your moderation settings. You can do this with !setmodrole and !setchannel. If you're still having issues, make sure that the MonaBot role is at the top of your roles list, and that MonaBot has permission to see your output channel!")
+    except KeyError:
+        if message.author.guild_permissions.administrator:
+            await message.reply("You haven't set up your moderation settings. You can do this with !setmodrole and !setchannel. If you're still having issues, make sure that the MonaBot role is at the top of your roles list, and that MonaBot has permission to see your output channel!")
+
     return
 
 
 #may need to take this out of main if the bot doesn't work
-'''def main():
-    config.load_config()
-    TOKEN = os.getenv('TOKEN')
-    bot.run(TOKEN)
-    
-if __name__ == "__main__":
-    main()
-'''
-config.load_config()
+
+load_dotenv()
+#--- DATABASE STUFF ---
+config.initialize_table()
+config.load_config_from_db()
 TOKEN = str(os.getenv('TOKEN'))
 bot.run(TOKEN)

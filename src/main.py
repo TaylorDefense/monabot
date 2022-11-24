@@ -99,7 +99,7 @@ async def ping(ctx):
     await ctx.send(latency) 
 
     if("output_channel" in config.config_vals[ctx.guild.name].keys()):
-        await bot.get_channel(config.config_vals[ctx.guild.name]["output_channel"]).send(latency)
+        await bot.get_channel(int(config.config_vals[ctx.guild.name]["output_channel"])).send(latency)
     else:
         await ctx.send(latency)
 
@@ -134,9 +134,9 @@ async def callmods(ctx):
     print("calling mods")
     await ctx.message.delete()
     try:
-        message = ctx.guild.get_role(config.config_vals[ctx.guild.name]["mod_role"]).mention + " " + ctx.author.mention + " is calling for assistance in " + ctx.channel.mention
+        message = ctx.guild.get_role(int(config.config_vals[ctx.guild.name]["mod_role"])).mention + " " + ctx.author.mention + " is calling for assistance in " + ctx.channel.mention
         print(message)
-        channel = bot.get_channel(config.config_vals[ctx.guild.name]["output_channel"])
+        channel = bot.get_channel(int(config.config_vals[ctx.guild.name]["output_channel"]))
         await channel.send(message)
     except AttributeError as err:
         if ctx.message.author.guild_permissions.administrator:
@@ -292,8 +292,8 @@ async def call_tempcheck(message : discord.Message):
         await message.add_reaction(emoji)
 
     try:
-        msg = message.guild.get_role(config.config_vals[message.guild.name]["mod_role"]).mention + " " + message.author.mention + " is calling a tempcheck in " + message.channel.mention
-        channel = bot.get_channel(config.config_vals[message.guild.name]["output_channel"])
+        msg = message.guild.get_role(int(config.config_vals[message.guild.name]["mod_role"])).mention + " " + message.author.mention + " is calling a tempcheck in " + message.channel.mention
+        channel = bot.get_channel(int(config.config_vals[message.guild.name]["output_channel"]))
         await channel.send(msg)
     except AttributeError:
         if message.author.guild_permissions.administrator:

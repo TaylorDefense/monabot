@@ -162,7 +162,7 @@ def set_mod_channel(guild, channel):
     try:
         conn = connect_to_db()
         dbcur = conn.cursor()
-        dbcur.execute("UPDATE Servers SET mod_channel_id = ? WHERE server_id = ?;", (channel_id,guild_id)) 
+        dbcur.execute("UPDATE Servers SET mod_channel_id = %s WHERE server_id = %s", (channel_id,guild_id)) 
         conn.commit()
         dbcur.close()
         conn.close()

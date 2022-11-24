@@ -112,6 +112,7 @@ async def echo(ctx, *, content:str):
     ex) !echo hello :)
     '''
     await ctx.send(content)
+    print("echo")
 
 @bot.command()
 async def hello(ctx):
@@ -120,6 +121,7 @@ async def hello(ctx):
     '''
     message = "Hello " + ctx.author.display_name + "!"
     await ctx.send(message)
+    print("hello")
 
 @bot.command()
 async def callmods(ctx):

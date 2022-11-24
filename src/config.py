@@ -30,14 +30,16 @@ def change_config(guild, key, val):
         config_vals[guild.name] = {}
     
     config_vals[guild.name][key] = val
-    save_config(0)
+    #save_config(0)
+
 
 def save_config(exit_flag=0):
     global config_vals
     print(config_vals)
     with open("src\config.txt", "w") as outfile:
         outfile.write(json.dumps(config_vals))
-    print("saved")
+    print("saved: ", config_vals)
+    print()
 
 
 
@@ -48,6 +50,7 @@ def connect_to_db():
         conn =  mysql.connector.connect(user=os.getenv('MYSQL_USER'), password=os.getenv('MYSQL_PASSWORD'),
                                     host=os.getenv('MYSQL_HOST'),
                                     database=os.getenv('MYSQL_DATABASE'))
+        print("connected to db!")
     except mysql.connector.Error as err:
         if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
             print("Something is wrong with your user name or password")
@@ -89,6 +92,7 @@ def initialize_table():
                 mod_role = "NULL"
             #insert into table
             dbcur.execute("INSERT IGNORE INTO Servers (server_id,server_name, mod_channel_id, mod_role_id) VALUES (?, ?, ?, ?);", (server_id, server_name, mod_channel_id, mod_role)) 
+        print("table initialized")
         conn.commit()
         dbcur.close()
         conn.close()
@@ -113,6 +117,7 @@ def add_guild(guild):
         dbcur.close()
         conn.close()
         change_config(guild, "id", guild.id)
+        print("added guild")
     except mysql.connector.Error as err:
         if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
             print("Something is wrong with your user name or password")
@@ -134,6 +139,7 @@ def set_mod_role(guild, role):
         dbcur.close()
         conn.close()
         change_config(guild, "mod_role", role.id)
+        print("mod role set")
     except mysql.connector.Error as err:
         if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
             print("Something is wrong with your user name or password")
@@ -156,6 +162,7 @@ def set_mod_channel(guild, channel):
         dbcur.close()
         conn.close()
         change_config(guild, "output_channel", channel.id)
+        print("mod channel set")
     except mysql.connector.Error as err:
         if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
             print("Something is wrong with your user name or password")
@@ -176,6 +183,7 @@ def load_config_from_db():
         cur.execute("SELECT * FROM Servers;") 
 
         for server_id, server_name, mod_channel_id, mod_role_id  in cur: 
+            print(server_name)
             config_vals[server_name] = {
                 "id" : server_id,
                 "output_channel" : mod_channel_id,

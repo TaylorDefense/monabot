@@ -182,7 +182,8 @@ def set_mod_channel(guild, channel):
 
 #load config vals from the database
 def load_config_from_db():
-    global config_vals = {}
+    global config_vals
+    config_vals = {}
     try:
         conn = connect_to_db()
         cur = conn.cursor()

@@ -231,7 +231,7 @@ def show_db_instances():
         else:
             print(err)
 
-def clear_db(guild, role):
+def clear_db():
     global config_vals
     try:
         conn = connect_to_db()

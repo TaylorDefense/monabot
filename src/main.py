@@ -56,10 +56,10 @@ async def on_member_join(member):
 @commands.has_permissions(administrator=True)
 async def setchannel(ctx):
     '''
-    Set the current channel for moderator-only outputs.
+    Set your current channel for moderator-only outputs.
     This is specifically for the !callmods and !tempcheck commands.
     Make sure this is a channel that only moderators can see! Note that
-    !callmods will not work unless the mod channel is set!
+    !callmods and pings on tempchecks will not work unless the mod channel is set.
     '''
     print(ctx.message.channel)
     config.set_mod_channel(ctx.guild, ctx.message.channel)
@@ -70,9 +70,10 @@ async def setchannel(ctx):
 @commands.has_permissions(administrator=True)
 async def setmodrole(ctx):
     '''
-    Sets the role to ping for mod output.
+    Sets the moderator role to ping for mod output.
     This is specifically for !callmods and !tempcheck. Note that
     !callmods will not work unless the modrole is set!
+    ex) `!setmodrole @moderators`
     '''
     print()
     if not ctx.message.role_mentions:
@@ -93,10 +94,11 @@ async def setmodrole(ctx):
 @commands.has_permissions(administrator=True)
 async def ping(ctx):
     '''
-    Pings MonaBot and outputs latency in the chat.
+    Pings MonaBot and outputs latency in the mod channel.
+    If the mod channel has not been set, latency is output in the channel
+    that the command was sent in. 
     '''
     latency = bot.latency 
-    await ctx.send(latency) 
 
     if("output_channel" in config.config_vals[ctx.guild.name].keys()):
         await bot.get_channel(int(config.config_vals[ctx.guild.name]["output_channel"])).send(latency)
@@ -109,7 +111,7 @@ async def ping(ctx):
 async def echo(ctx, *, content:str):
     '''
     Mona will echo back whatever you type after the command.
-    ex) !echo hello :)
+    ex) `!echo hello :)`
     '''
     await ctx.send(content)
     print("echo")
@@ -155,7 +157,7 @@ async def callmods(ctx):
 @bot.command()
 async def tempcheck(ctx):
     '''
-    call a tempcheck to gauge people's comfort in the conversation.
+    Call a tempcheck to gauge people's comfort in the conversation.
     Mona will keep an eye out for the word "tempcheck" in messages, and 
     will add reactions whenever it appears even if not used in a command. 
     If the stop sign reaction is added, it's time to move on from this topic of conversation.
@@ -163,8 +165,6 @@ async def tempcheck(ctx):
     await asyncio.sleep(1) 
     #note: tempcheck is a trigger, so the command doesn't actually need to do work.
     #we simply await while on_message() takes care of the call.
-
-
 
 @bot.command()
 async def selfcare(ctx):
@@ -205,8 +205,9 @@ async def crimes(ctx, user: discord.Member, *, accusation):
     '''
     Accuse a user of crimes and let the people vote on the verdict!
     ex) !crimes @user they eat kitkats like a heathen!
-    Reactions will be used to determine a person's fate. Voting lasts for 60 seconds,
-    and a guilty verdict adds the CRIMINAL role to a user for one hour, then removes it.
+    Reactions will be used to determine a person's fate. Voting lasts for 60 seconds.
+    A guilty verdict adds the CRIMINAL role to a user for one hour, then removes it.
+    NOTE: Make sure that the MonaBot and Criminal roles are at the top of your roles list!
     '''
     if not ctx.message.mentions or not (user in ctx.guild.members):
         await ctx.send("At least ping the person you're accusing! (`!crimes @user [accusation])`")
@@ -281,7 +282,7 @@ async def crimes(ctx, user: discord.Member, *, accusation):
 #--- helper functions ---
 async def call_tempcheck(message : discord.Message):
     '''
-    call a tempcheck to gauge people's comfort in the conversation.
+    Call a tempcheck to gauge people's comfort in the conversation.
     Mona will keep an eye out for the word "tempcheck" in messages, and 
     will add reactions whenever it appears. If the stope sign reaction
     is added, it's time to move on from this topic of conversation.
@@ -304,6 +305,8 @@ async def call_tempcheck(message : discord.Message):
 
     return
 
+#the below commands are for amending the database from discord if the console is not accessible
+'''
 @bot.command()
 @commands.has_permissions(administrator=True)
 async def showdb(ctx):
@@ -316,7 +319,7 @@ async def cleardb(ctx):
     config.clear_db()
     await asyncio.sleep(2)
 
-
+'''
 #may need to take this out of main if the bot doesn't work
 
 load_dotenv()

@@ -172,7 +172,7 @@ async def selfcare(ctx):
     get a useful set of self care tips!
     This list came from the BLASEBALL server. It has been amended with the walkthrough link.
     '''
-    message = """> 💗✨SELF CARE TIME✨💗
+    message = """
     > **Have you drink recently?**
     > 🧃 Go get a drink! 🧃
     > **Have you eaten recently?**
@@ -197,7 +197,13 @@ async def selfcare(ctx):
     > You are allowed to be unproductive. You are allowed to have a day off from everything. Rest is Important. Rest.
     """
     #most of this message taken from +selfcare in the BLASEBALL discord server, implemented with carlbot.
-    await ctx.send(message)
+
+    embed=discord.Embed(title="💗✨SELF CARE TIME✨💗", description=message, color=0xBDFDFF)
+    
+    try:
+        await ctx.send(embed=embed)
+    except:
+        await ctx.send(message)
 
 #crimes
 @bot.command()

@@ -70,6 +70,7 @@ def initialize_table():
         conn = connect_to_db()
         dbcur = conn.cursor()
         dbcur.execute("""
+            DROP TABLES
             CREATE TABLE IF NOT EXISTS Servers (
                 server_id VARCHAR(20) PRIMARY KEY,
                 server_name VARCHAR(128) NOT NULL,

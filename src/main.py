@@ -173,11 +173,11 @@ async def selfcare(ctx):
     This list came from the BLASEBALL server. It has been amended with the walkthrough link.
     '''
     message = """
-    > **Have you drink recently?**
+    > **Have you drank anything recently?**
     > 🧃 Go get a drink! 🧃
     > **Have you eaten recently?**
     > 🍕 It is time to eat! 🍕
-    > **Past 12am?**
+    > **Is it past 12am?**
     > 🛌 Siesta Time 🛌
     > **Sitting still all day?**
     > 🕺 Get up and move your body! 🕺
@@ -194,7 +194,7 @@ async def selfcare(ctx):
     > **Need some help with self care?**
     > 💗 Check out https://youfeellikeshit.com/ for a helpful step by step walkthrough. 💗
     > **Most Importantly**
-    > You are allowed to be unproductive. You are allowed to have a day off from everything. Rest is Important. Rest.
+    > You are allowed to be unproductive. You are allowed to take time for yourself. Rest is important, and *you* are important! Take care of yourself!
     """
     #most of this message taken from +selfcare in the BLASEBALL discord server, implemented with carlbot.
 
@@ -278,6 +278,7 @@ async def crimes(ctx, user: discord.Member, *, accusation):
             print(role in user.roles)
             await user.remove_roles(role)
    
+#bot.command()
 
 
 #go to sleep

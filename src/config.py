@@ -186,7 +186,7 @@ def load_config_from_db():
         cur.execute("SELECT * FROM Servers;") 
 
         for server_id, server_name, mod_channel_id, mod_role_id  in cur: 
-            print(server_name)
+            print(server_name, str(server_id), str(mod_channel_id), str(mod_role_id)))
             config_vals[server_name] = {
                 "id" : server_id,
                 "output_channel" : mod_channel_id,
@@ -203,3 +203,21 @@ def load_config_from_db():
         else:
             print(err)
     return
+
+def show_db_instances():
+     try:
+        conn = connect_to_db()
+        dbcur = conn.cursor()
+        dbcur.execute("SELECT * FROM Servers;")
+        for (server_id, server_name, mod_channel_id, mod_role_id) in dbcur: 
+            print(server_name, str(server_id), str(mod_channel_id), str(mod_role_id)))
+        dbcur.close()
+        conn.close()
+        print("mod channel set")
+    except mysql.connector.Error as err:
+        if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
+            print("Something is wrong with your user name or password")
+        elif err.errno == errorcode.ER_BAD_DB_ERROR:
+            print("Database does not exist")
+        else:
+            print(err)

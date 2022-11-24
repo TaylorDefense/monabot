@@ -140,6 +140,8 @@ def set_mod_role(guild, role):
         conn = connect_to_db()
         dbcur = conn.cursor()
         dbcur.execute("UPDATE Servers SET mod_role_id = %s WHERE server_id = %s;", (role_id,guild_id)) 
+        dbcur.execute("SELECT server_name, mod_role_id FROM Servers")
+        for server_name, mod_role in dbcur: print(server_name, mod_role)
         conn.commit()
         dbcur.close()
         conn.close()
@@ -215,7 +217,6 @@ def show_db_instances():
             print(server_name, str(server_id), str(mod_channel_id), str(mod_role_id))
         dbcur.close()
         conn.close()
-        print("mod channel set")
     except mysql.connector.Error as err:
         if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
             print("Something is wrong with your user name or password")

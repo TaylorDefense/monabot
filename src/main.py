@@ -302,6 +302,12 @@ async def call_tempcheck(message : discord.Message):
 
     return
 
+@bot.command()
+@commands.has_permissions(administrator=True)
+async def showdb():
+    config.show_db_instances()
+    asyncio.sleep(2)
+
 
 #may need to take this out of main if the bot doesn't work
 

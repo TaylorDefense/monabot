@@ -308,6 +308,12 @@ async def showdb(ctx):
     config.show_db_instances()
     await asyncio.sleep(2)
 
+@bot.command()
+@commands.has_permissions(administrator=True)
+async def cleardb(ctx):
+    config.clear_db()
+    await asyncio.sleep(2)
+
 
 #may need to take this out of main if the bot doesn't work
 

@@ -95,7 +95,7 @@ def initialize_table():
             else:
                 mod_role = "NULL"
             #insert into table
-            dbcur.execute("INSERT IGNORE INTO Servers (server_id,server_name, mod_channel_id, mod_role_id) VALUES (?, ?, ?, ?);", (server_id, server_name, mod_channel_id, mod_role)) 
+            dbcur.execute("INSERT IGNORE INTO Servers (server_id,server_name, mod_channel_id, mod_role_id) VALUES (%s, %s, %s, %s);", (server_id, server_name, mod_channel_id, mod_role)) 
         print("table initialized")
         config_vals = {}
         conn.commit()
@@ -117,7 +117,7 @@ def add_guild(guild):
     try:
         conn = connect_to_db()
         dbcur = conn.cursor()
-        dbcur.execute("INSERT INTO Servers (server_id,server_name) VALUES (?, ?);", (name,id)) 
+        dbcur.execute("INSERT INTO Servers (server_id,server_name) VALUES (%s, %s);", (name,id)) 
         conn.commit()
         dbcur.close()
         conn.close()
@@ -139,7 +139,7 @@ def set_mod_role(guild, role):
     try:
         conn = connect_to_db()
         dbcur = conn.cursor()
-        dbcur.execute("UPDATE Servers SET mod_role_id = ? WHERE server_id = ?;", (role_id,guild_id)) 
+        dbcur.execute("UPDATE Servers SET mod_role_id = %s WHERE server_id = %s;", (role_id,guild_id)) 
         conn.commit()
         dbcur.close()
         conn.close()

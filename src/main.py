@@ -138,16 +138,18 @@ async def callmods(ctx):
         print(message)
         channel = bot.get_channel(config.config_vals[ctx.guild.name]["output_channel"])
         await channel.send(message)
-    except AttributeError:
+    except AttributeError as err:
         if ctx.message.author.guild_permissions.administrator:
             await ctx.send("You haven't set up that command. You can do this with !setmodrole and !setchannel. If you're still having issues, make sure that the MonaBot role is at the top of your roles list, and that MonaBot has permission to see your output channel!")
         else:
             await ctx.send("Your admin hasn't set up that command.")
-    except KeyError:
+        print(err)
+    except KeyError as err:
         if ctx.message.author.guild_permissions.administrator:
             await ctx.send("You haven't set up that command. You can do this with !setmodrole and !setchannel. If you're still having issues, make sure that the MonaBot role is at the top of your roles list, and that MonaBot has permission to see your output channel!")
         else:
             await ctx.send("Your admin hasn't set up that command.")
+        print(err)
     print("called the mods")
 
 @bot.command()

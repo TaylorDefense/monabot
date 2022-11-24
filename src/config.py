@@ -117,7 +117,7 @@ def add_guild(guild):
     try:
         conn = connect_to_db()
         dbcur = conn.cursor()
-        dbcur.execute("INSERT INTO Servers (server_id,server_name) VALUES (%s, %s);", (name,id)) 
+        dbcur.execute("INSERT INTO Servers (server_id,server_name) VALUES (%s, %s);", (id,name)) 
         conn.commit()
         dbcur.close()
         conn.close()

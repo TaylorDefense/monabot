@@ -173,28 +173,28 @@ async def selfcare(ctx):
     This list came from the BLASEBALL server. It has been amended with the walkthrough link.
     '''
     message = """
-    > **Have you drank anything recently?**
-    > 🧃 Go get a drink! 🧃
-    > **Have you eaten recently?**
-    > 🍕 It is time to eat! 🍕
-    > **Is it past 12am?**
-    > 🛌 Siesta Time 🛌
-    > **Sitting still all day?**
-    > 🕺 Get up and move your body! 🕺
-    > **Cold?**
-    > 🧣 Bundle Up! 🧣
-    > **Hot?**
-    > 🧊 Have something cold! 🧊
-    > **Forgot your meds?**
-    > 💊 This is your reminder to take any needed medication! 💊
-    > **Need to be clean?**
-    > 🚿 Take a shower, wash your face, or at least splash some water on your face! 🚿
-    > **Overwhelmed?**
-    > 🚪 Take some time to get away. 🚪
-    > **Need some help with self care?**
-    > 💗 Check out https://youfeellikeshit.com/ for a helpful step by step walkthrough. 💗
-    > **Most Importantly**
-    > You are allowed to be unproductive. You are allowed to take time for yourself. Rest is important, and *you* are important! Take care of yourself!
+    **Have you drank anything recently?**
+    🧃 Go get a drink! 🧃
+    **Have you eaten recently?**
+    🍕 It is time to eat! 🍕
+    **Is it past 12am?**
+    🛌 Siesta Time 🛌
+    **Sitting still all day?**
+    🕺 Get up and move your body! 🕺
+    **Cold?**
+    🧣 Bundle Up! 🧣
+    **Hot?**
+    🧊 Have something cold! 🧊
+    **Forgot your meds?**
+    💊 This is your reminder to take any needed medication! 💊
+    **Need to be clean?**
+    🚿 Take a shower, wash your face, or at least splash some water on your face! 🚿
+    **Overwhelmed?**
+    🚪 Take some time to get away. 🚪
+    **Need some help with self care?**
+    💗 Check out https://youfeellikeshit.com/ for a helpful step by step walkthrough. 💗
+    **Most Importantly**
+    You are allowed to be unproductive. You are allowed to take time for yourself. Rest is important, and *you* are important! Take care of yourself!
     """
     #most of this message taken from +selfcare in the BLASEBALL discord server, implemented with carlbot.
 
@@ -207,7 +207,7 @@ async def selfcare(ctx):
 
 #crimes
 @bot.command()
-async def crimes(ctx, user: discord.Member, *, accusation):
+async def crimes(ctx, user: discord.Member, *, accusation = ""):
     '''
     Accuse a user of crimes and let the people vote on the verdict!
     ex) !crimes @user they eat kitkats like a heathen!
@@ -223,8 +223,14 @@ async def crimes(ctx, user: discord.Member, *, accusation):
         for member in ctx.guild.members:
             print(member)
         return
-    accuse_message = ctx.message.author.mention + " is accusing " + user.mention + """of crimes! The accusation is as follows:
-     > """ + accusation
+
+    if (accusation != ""):
+        accuse_message = ctx.message.author.mention + " is accusing " + user.mention + """ of crimes! The accusation is as follows:
+        > """ + accusation
+    else:
+        accuse_message = ctx.message.author.mention + " is accusing " + user.mention + " of crimes!"
+    
+    
     await ctx.send(accuse_message)
     vote_message = """⚖️ **Place Your Vote** ⚖️
     > 😇 INNOCENT! 
@@ -327,7 +333,6 @@ async def cleardb(ctx):
     await asyncio.sleep(2)
 
 '''
-#may need to take this out of main if the bot doesn't work
 
 load_dotenv()
 #--- DATABASE STUFF ---

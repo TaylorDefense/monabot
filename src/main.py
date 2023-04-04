@@ -334,14 +334,14 @@ async def join_game(ctx):
 
 
 @bot.command()
-async def start_game():
+async def start_game(ctx):
     '''
     Starts an upcoming game of assassin
     '''
     #make a "generate targets" command
 
 @bot.command()
-async def assassin_players():
+async def assassin_players(ctx):
     '''
     Lists the users playing assassin, and their status as in/out of the game
     '''
@@ -352,9 +352,14 @@ async def assassin_players():
 
     embed=discord.Embed(title="Assassins", description=msg, color=0xA80006)
     
+    try:
+        await ctx.send(embed=embed)
+    except:
+        await ctx.send(message)
+    
 
 @bot.command()
-async def target_eliminated():
+async def target_eliminated(ctx):
     '''
     Confirms that your target has been eliminated, then gives you a new target.
     This command is invisible- it is deleted as soon as it is sent, and then carried out through DMs
@@ -367,7 +372,7 @@ async def target_eliminated():
     #update tables
 
 @bot.command()
-async def assassins_remaining():
+async def assassins_remaining(ctx):
     '''
     Gives a count of how many players are left in the game.
     '''

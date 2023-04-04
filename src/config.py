@@ -276,7 +276,7 @@ def make_assassin_tables(gamemaster_id):
             );
             """)
         
-        dbcur.execute("INSERT INTO Assassin (gamemaster_id, player_count) VALUES (%s, %s);", (gamemaster_id, 0)) 
+        dbcur.execute("INSERT INTO Assassin (gamemaster_id, player_count) VALUES (%d, %s);", (gamemaster_id, 0)) 
         conn.commit()
         dbcur.close()
         conn.close()

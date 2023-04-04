@@ -355,7 +355,7 @@ async def assassin_players(ctx):
     try:
         await ctx.send(embed=embed)
     except:
-        await ctx.send(message)
+        await ctx.send(msg)
     
 
 @bot.command()

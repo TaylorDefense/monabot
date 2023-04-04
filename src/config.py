@@ -285,6 +285,7 @@ def make_assassin_tables(gamemaster_id):
         assassin_vals["gamemaster_id"] = gamemaster_id
         assassin_vals["player_count"] = 0
         assassin_vals["players"] = {}
+        print(assassin_vals + "\n")
         print()
     except mysql.connector.Error as err:
         if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:

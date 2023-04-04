@@ -372,11 +372,11 @@ def generate_targets():
     for player in players:
         target = player
         while target == player:
-            target = players[random.randint(0, (len(players) - 1)))]
+            target = players[random.randint(0, (len(players) - 1))]
             if target == player and len(players = 1):
                 return generate_targets()
         players.remove(target)
         assassin_vals["players"][player]["target_id"] = target
         assassin_vals["players"][player]["target_name"] = assassin_vals["players"][target]["player_name"]
-        
+
 

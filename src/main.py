@@ -285,6 +285,95 @@ async def crimes(ctx, user: discord.Member, *, accusation = ""):
             await user.remove_roles(role)
    
 #bot.command()
+# --- ASSASSIN COMMANDS ---
+@bot.command()
+async def create_game(ctx):
+    '''
+    Starts a new game of assassin.
+    '''
+    print("Starting a game of assassin!")
+    config.make_assassin_tables(ctx.author.id)
+    message = "A new game of assassin is beginning! Use the `join_assassin` command to join the game!"
+    await ctx.send(message)
+    #make new DB table for the game
+
+@bot.command()
+async def end_game(ctx):
+    '''
+    Ends a current game of assassin, if one exists.
+    '''
+    if config.check_game_status():
+        if(ctx.author.id == config.get_gamemaster()):
+            config.drop_assassin_tables()
+            await ctx.send("The game has been called off. Use the `create_game` command to start a new game.")
+        else:
+            await ctx.send("You are not the gamemaster. The gamemaster can end the game with the command `end_game`, or an admin can end the game with the command `force_end_game`.")
+    else:
+        await ctx.send("There is no game currently running. Use the `create_game` command to start a new game.")
+
+@bot.command()
+@commands.has_permissions(administrator=True)
+async def force_end_game(ctx):
+    '''
+    Ends a current game of assassin, if one exists.
+    '''
+    if config.check_game_status():
+        config.drop_assassin_tables()
+        await ctx.send("The game has been called off. Use the `create_game` command to start a new game.")
+    else:
+        await ctx.send("There is no game currently running. Use the `create_game` command to start a new game.")
+
+
+@bot.command()
+async def join_game(ctx):
+    '''
+    Joins an upcoming game of assassin
+    '''
+    config.add_new_player(ctx.author.id, ctx.author.display_name)
+    await ctx.send("You're in the game! Once the gamemaster starts the game, you will receive your target.")
+
+
+@bot.command()
+async def start_game():
+    '''
+    Starts an upcoming game of assassin
+    '''
+    #make a "generate targets" command
+
+@bot.command()
+async def assassin_players():
+    '''
+    Lists the users playing assassin, and their status as in/out of the game
+    '''
+    player_arr = config.get_players()
+    msg = ""
+    for player, status in player_arr:
+        msg += player + "\t\t" + status + "\n"
+
+    embed=discord.Embed(title="Assassins", description=msg, color=0xA80006)
+    
+
+@bot.command()
+async def target_eliminated():
+    '''
+    Confirms that your target has been eliminated, then gives you a new target.
+    This command is invisible- it is deleted as soon as it is sent, and then carried out through DMs
+    '''
+    #respond to message
+    #ask target if they have been eliminated
+    #parse response
+    #respond to players
+    #get new targets
+    #update tables
+
+@bot.command()
+async def assassins_remaining():
+    '''
+    Gives a count of how many players are left in the game.
+    '''
+
+
+
 
 
 #go to sleep
@@ -317,6 +406,8 @@ async def call_tempcheck(message : discord.Message):
             await message.reply("You haven't set up your moderation settings. You can do this with !setmodrole and !setchannel. If you're still having issues, make sure that the MonaBot role is at the top of your roles list, and that MonaBot has permission to see your output channel!")
 
     return
+
+
 
 #the below commands are for amending the database from discord if the console is not accessible
 '''

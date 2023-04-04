@@ -8,6 +8,7 @@ import warnings
 warnings.warn("Warning...........Message")
 
 config_vals = {}
+assassin_vals = {}
 
 def load_config():
     global config_vals
@@ -248,3 +249,115 @@ def clear_db():
             print("Database does not exist")
         else:
             print(err)
+
+# --- ASSASSIN FUNCTIONS ---
+
+def make_assassin_tables(gamemaster_id):
+    global assassin_vals
+    try:
+        conn = connect_to_db()
+        dbcur = conn.cursor()
+        dbcur.execute("""
+            CREATE TABLE IF NOT EXISTS AssassinPlayers (
+                player_id INT(255) PRIMARY KEY,
+                player_name VARCHAR(128) NOT NULL,
+                status VARCHAR(3),
+                target_id INT(255),
+                target_name VARCHAR(128),
+                killed_by VARCHAR(128),
+                kill_count INT(255)
+            );
+            """)
+        dbcur.execute("""
+            CREATE TABLE IF NOT EXISTS Assassin (
+                gamemaster_id INT(255) PRIMARY KEY,
+                player_count INT(255) NOT NULL
+            );
+            """)
+        
+        dbcur.execute("INSERT INTO Assassin (gamemaster_id, player_count) VALUES (%s, %s);", (gamemaster_id, 0)) 
+        conn.commit()
+        dbcur.close()
+        conn.close()
+        assassin_vals = {}
+        assassin_vals["gamemaster_id"] = gamemaster_id
+        assassin_vals["player_count"] = 0
+        assassin_vals["players"] = {}
+    except mysql.connector.Error as err:
+        if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
+            print("Something is wrong with your user name or password")
+        elif err.errno == errorcode.ER_BAD_DB_ERROR:
+            print("Database does not exist")
+        else:
+            print(err)
+        # load in values saved to config file
+
+def drop_assassin_tables():
+    global assassin_vals
+    try:
+        conn = connect_to_db()
+        dbcur = conn.cursor()
+        dbcur.execute("DROP TABLE AssassinPlayers") 
+        dbcur.execute("DROP TABLE Assassin") 
+        conn.commit()
+        dbcur.close()
+        conn.close()
+        print("dropped table AssassinPlayers and Assassin")
+        assassin_vals = {}
+    except mysql.connector.Error as err:
+        if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
+            print("Something is wrong with your user name or password")
+        elif err.errno == errorcode.ER_BAD_DB_ERROR:
+            print("Database does not exist")
+        else:
+            print(err)
+
+def check_game_status():
+    global assassin_vals
+    if len(assassin_vals) != 0:
+        return True
+    else:
+        return False
+
+def get_gamemaster():
+    global assassin_vals
+    if len(assassin_vals) != 0:
+        return assassin_vals["gamemaster_id"]
+    else:
+        return -1
+
+def add_new_player(pid, pname):
+    global assassin_vals
+    try:
+        conn = connect_to_db()
+        dbcur = conn.cursor()
+        dbcur.execute("INSERT INTO AssassinPlayers (player_id, player_name, status, target_id, target_name, killed_by, kill_count) VALUES (%d, %s, %s, %d, %s, %s, %d );", (pid, pname, "in", None, None, None, 0 )) 
+        conn.commit()
+        dbcur.close()
+        conn.close()
+        assassin_vals["players"][pid] = {}
+        assassin_vals["players"][pid]["name"] = pname
+        assassin_vals["players"][pid]["status"] = "in"
+        assassin_vals["players"][pid]["target_id"] = None
+        assassin_vals["players"][pid]["target_name"] = None
+        assassin_vals["players"][pid]["killed_by"] = None 
+        assassin_vals["players"][pid]["kill_count"] = 0
+    except mysql.connector.Error as err:
+        if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
+            print("Something is wrong with your user name or password")
+        elif err.errno == errorcode.ER_BAD_DB_ERROR:
+            print("Database does not exist")
+        else:
+            print(err)
+
+def get_players():
+    global assassin_vals
+    players = []
+    if len(assassin_vals) ==  0:
+        return players
+
+    for player_id in assassin_vals["players"]:
+        players.append((player_id["name"], player_id["status"]))
+    return players
+    
+    

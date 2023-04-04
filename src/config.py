@@ -342,6 +342,7 @@ def add_new_player(pid, pname):
         assassin_vals["players"][pid]["target_name"] = None
         assassin_vals["players"][pid]["killed_by"] = None 
         assassin_vals["players"][pid]["kill_count"] = 0
+        print(assassin_vals)
     except mysql.connector.Error as err:
         if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
             print("Something is wrong with your user name or password")
@@ -355,9 +356,16 @@ def get_players():
     players = []
     if len(assassin_vals) ==  0:
         return players
-
     for player_id in assassin_vals["players"]:
         players.append((player_id["name"], player_id["status"]))
+    print(players)
+    print(assassin_vals)
     return players
     
-    
+def generate_targets():
+    global assassin_vals
+    if len(assassin_vals) == 0:
+        print("No targets to assign")
+        return
+    players = assassin_vals["players"].keys()
+    for player in players:

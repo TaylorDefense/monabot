@@ -280,10 +280,12 @@ def make_assassin_tables(gamemaster_id):
         conn.commit()
         dbcur.close()
         conn.close()
+        print("tables created\n")
         assassin_vals = {}
         assassin_vals["gamemaster_id"] = gamemaster_id
         assassin_vals["player_count"] = 0
         assassin_vals["players"] = {}
+        print()
     except mysql.connector.Error as err:
         if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
             print("Something is wrong with your user name or password")
@@ -344,6 +346,7 @@ def add_new_player(pid, pname):
         assassin_vals["players"][pid]["killed_by"] = None 
         assassin_vals["players"][pid]["kill_count"] = 0
         print(assassin_vals)
+        print("\nadded player\n")
     except mysql.connector.Error as err:
         if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
             print("Something is wrong with your user name or password")

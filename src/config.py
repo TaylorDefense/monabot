@@ -5,6 +5,7 @@ import mysql.connector
 from mysql.connector import errorcode
 import sys
 import warnings
+import random
 warnings.warn("Warning...........Message")
 
 config_vals = {}
@@ -364,8 +365,18 @@ def get_players():
     
 def generate_targets():
     global assassin_vals
-    if len(assassin_vals) == 0:
-        print("No targets to assign")
+    if len(assassin_vals) <= 1:
+        print("Not enough targets to assign")
         return
     players = assassin_vals["players"].keys()
     for player in players:
+        target = player
+        while target == player:
+            target = players[random.randint(0, (len(players) - 1)))]
+            if target == player and len(players = 1):
+                return generate_targets()
+        players.remove(target)
+        assassin_vals["players"][player]["target_id"] = target
+        assassin_vals["players"][player]["target_name"] = assassin_vals["players"][target]["player_name"]
+        
+
